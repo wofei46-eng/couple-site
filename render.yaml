@@ -20,7 +20,7 @@ services:
     runtime: node
     plan: free
     region: singapore
-    buildCommand: npm install
+    buildCommand: npm install && npm rebuild better-sqlite3
     startCommand: node app.js
     envVars:
       - key: NODE_ENV
