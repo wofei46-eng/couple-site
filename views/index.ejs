@@ -1,0 +1,63 @@
+<%- include('partials/header') %>
+
+<section class="hero" <% if (settings.hero_background) { %>style="background-image:url('<%= settings.hero_background %>')"<% } %>>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1 class="site-title"><%= settings.site_name %></h1>
+    <p class="site-subtitle"><%= settings.site_subtitle %></p>
+    <div class="couple-display">
+      <div class="avatar-card">
+        <img src="<%= settings.left_avatar %>" alt="<%= settings.left_name %>" class="avatar">
+        <span class="avatar-name"><%= settings.left_name %></span>
+      </div>
+      <div class="heart-pulse">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-9.5-9C.5 8.5 2.5 4 7 4c2 0 3.5 1 5 2.5C13.5 5 15 4 17 4c4.5 0 6.5 4.5 4.5 8-2.5 4.5-9.5 9-9.5 9z"/></svg>
+      </div>
+      <div class="avatar-card">
+        <img src="<%= settings.right_avatar %>" alt="<%= settings.right_name %>" class="avatar">
+        <span class="avatar-name"><%= settings.right_name %></span>
+      </div>
+    </div>
+    <div class="days-counter">
+      <span class="days-number"><%= days %></span>
+      <span class="days-label">天</span>
+      <span class="days-text">我们已经在一起</span>
+    </div>
+  </div>
+</section>
+
+<section class="container home-section">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-value"><%= checklistCount.done || 0 %> / <%= checklistCount.total %></div>
+      <div class="stat-label">已完成清单</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value"><%= days %></div>
+      <div class="stat-label">在一起天数</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value"><%= articles.length %></div>
+      <div class="stat-label">篇日记</div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <h2>📝 最新日记</h2>
+    <a href="/articles" class="more-link">查看全部 →</a>
+  </div>
+  <div class="article-grid">
+    <% articles.forEach(a => { %>
+      <a href="/articles/<%= a.id %>" class="article-card">
+        <div class="article-card-title"><%= a.title %></div>
+        <div class="article-card-meta">
+          <span><%= a.author_name %></span>
+          <span><%= new Date(a.created_at).toLocaleDateString('zh-CN') %></span>
+        </div>
+        <div class="article-card-excerpt"><%= a.content.replace(/<[^>]+>/g, '').substring(0, 80) %>...</div>
+      </a>
+    <% }) %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

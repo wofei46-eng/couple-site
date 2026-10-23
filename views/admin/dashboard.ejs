@@ -1,0 +1,45 @@
+<%- include('partials/admin-header') %>
+
+<div class="admin-content">
+  <h1 class="admin-title">概览</h1>
+  <div class="admin-stats">
+    <div class="admin-stat-card">
+      <div class="stat-num"><%= articleCount %></div>
+      <div class="stat-label">篇日记</div>
+    </div>
+    <div class="admin-stat-card">
+      <div class="stat-num"><%= checklistCount %></div>
+      <div class="stat-label">条清单</div>
+    </div>
+    <div class="admin-stat-card">
+      <div class="stat-num"><%= photoCount %></div>
+      <div class="stat-label">张照片</div>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <div class="card-header">
+      <h3>最新日记</h3>
+      <a href="/admin/articles/new" class="btn btn-primary btn-sm">+ 写日记</a>
+    </div>
+    <table class="admin-table">
+      <thead>
+        <tr><th>标题</th><th>时间</th><th>操作</th></tr>
+      </thead>
+      <tbody>
+        <% recentArticles.forEach(a => { %>
+          <tr>
+            <td><%= a.title %></td>
+            <td><%= new Date(a.created_at).toLocaleString('zh-CN') %></td>
+            <td>
+              <a href="/articles/<%= a.id %>" target="_blank" class="link">查看</a>
+              <a href="/admin/articles/<%= a.id %>/edit" class="link">编辑</a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('partials/admin-footer') %>

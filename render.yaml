@@ -1,0 +1,31 @@
+# Render.com 部署配置
+# 文档: https://render.com/docs/blueprint-spec
+#
+# 免费版限制：
+#   - 无持久化磁盘，重启后数据（日记/照片/设置）会丢失
+#   - 15 分钟无访问会休眠，首次访问需等待几秒
+#
+# 如需数据持久化（推荐）：
+#   1. 升级到 Starter 套餐（$7/月）
+#   2. 在 Render 后台 → 服务 → Disks 添加磁盘：
+#      名称: couple-data
+#      挂载路径: /var/data
+#      大小: 1 GB
+#   3. 添加环境变量: COUPLE_DATA_DIR = /var/data
+#   4. 重新部署
+
+services:
+  - type: web
+    name: couple-site
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm install
+    startCommand: node app.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "10000"
+    healthCheckPath: /
+    autoDeploy: true

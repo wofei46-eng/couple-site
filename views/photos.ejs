@@ -1,0 +1,19 @@
+<%- include('partials/header') %>
+
+<section class="container page">
+  <h1 class="page-title">📷 我们的相册</h1>
+  <p class="page-desc">定格每一个美好瞬间</p>
+  <% if (photos.length === 0) { %>
+    <div class="empty">还没有照片，去后台上传吧～</div>
+  <% } %>
+  <div class="photo-grid">
+    <% photos.forEach(p => { %>
+      <div class="photo-card">
+        <img src="<%= p.filename %>" alt="<%= p.caption %>" loading="lazy">
+        <% if (p.caption) { %><p class="photo-caption"><%= p.caption %></p><% } %>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

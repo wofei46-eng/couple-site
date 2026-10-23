@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title || '后台管理' %> - <%= settings.site_name %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+  <aside class="admin-sidebar">
+    <div class="admin-logo">💕 后台管理</div>
+    <nav class="admin-nav">
+      <a href="/admin" class="<%= currentPath === '/admin' ? 'active' : '' %>">📊 概览</a>
+      <a href="/admin/articles" class="<%= currentPath.startsWith('/admin/articles') ? 'active' : '' %>">📝 日志管理</a>
+      <a href="/admin/checklist" class="<%= currentPath.startsWith('/admin/checklist') ? 'active' : '' %>">✨ 清单管理</a>
+      <a href="/admin/photos" class="<%= currentPath.startsWith('/admin/photos') ? 'active' : '' %>">📷 相册管理</a>
+      <a href="/admin/settings" class="<%= currentPath.startsWith('/admin/settings') ? 'active' : '' %>">⚙️ 站点设置</a>
+    </nav>
+    <div class="admin-user">
+      <span>👤 <%= user.nickname %></span>
+      <a href="/admin/logout">退出</a>
+    </div>
+  </aside>
+  <main class="admin-main">

@@ -1,0 +1,28 @@
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <p><%= settings.site_subtitle %></p>
+      <p class="copyright">© <%= new Date().getFullYear() %> <%= settings.site_name %> · Made with 💕</p>
+    </div>
+  </footer>
+  <script>
+    // 点击空白处关闭移动端菜单
+    document.addEventListener('click', (e) => {
+      const nav = document.querySelector('.nav');
+      const toggle = document.querySelector('.menu-toggle');
+      if (nav.classList.contains('open') && !nav.contains(e.target) && !toggle.contains(e.target)) {
+        nav.classList.remove('open');
+      }
+    });
+
+    // 注册 Service Worker（PWA 支持）
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((reg) => console.log('Service Worker 注册成功:', reg.scope))
+          .catch((err) => console.log('Service Worker 注册失败:', err));
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<%- include('partials/header') %>
+
+<section class="container page">
+  <h1 class="page-title">💞 关于我们</h1>
+  <div class="about-content">
+    <div class="about-couple">
+      <div class="about-card">
+        <img src="<%= settings.left_avatar %>" alt="<%= settings.left_name %>">
+        <h3><%= settings.left_name %></h3>
+      </div>
+      <div class="about-heart">❤️</div>
+      <div class="about-card">
+        <img src="<%= settings.right_avatar %>" alt="<%= settings.right_name %>">
+        <h3><%= settings.right_name %></h3>
+      </div>
+    </div>
+    <div class="about-text">
+      <p><%- settings.about_text.replace(/\n/g, '<br>') %></p>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

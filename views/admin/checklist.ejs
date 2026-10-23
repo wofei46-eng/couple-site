@@ -1,0 +1,42 @@
+<%- include('partials/admin-header') %>
+
+<div class="admin-content">
+  <h1 class="admin-title">清单管理</h1>
+  <div class="admin-card">
+    <form action="/admin/checklist" method="post" class="inline-form">
+      <input type="text" name="emoji" placeholder="💕" maxlength="4" style="width:70px">
+      <input type="text" name="title" placeholder="想一起做的事..." required>
+      <button class="btn btn-primary">添加</button>
+    </form>
+  </div>
+  <div class="admin-card">
+    <table class="admin-table">
+      <thead>
+        <tr><th>表情</th><th>事项</th><th>状态</th><th>操作</th></tr>
+      </thead>
+      <tbody>
+        <% items.forEach(item => { %>
+          <tr>
+            <form action="/admin/checklist/<%= item.id %>?_method=PUT" method="post" id="form-<%= item.id %>">
+              <td><input type="text" name="emoji" value="<%= item.emoji %>" style="width:70px"></td>
+              <td><input type="text" name="title" value="<%= item.title %>"></td>
+              <td>
+                <label class="check-label">
+                  <input type="checkbox" name="done" value="1" <%= item.done ? 'checked' : '' %>> 已完成
+                </label>
+              </td>
+              <td class="actions">
+                <button class="link" form="form-<%= item.id %>">保存</button>
+            </form>
+                <form action="/admin/checklist/<%= item.id %>?_method=DELETE" method="post" style="display:inline" onsubmit="return confirm('删除？')">
+                  <button class="link link-danger">删除</button>
+                </form>
+              </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('partials/admin-footer') %>

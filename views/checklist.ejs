@@ -1,0 +1,27 @@
+<%- include('partials/header') %>
+
+<section class="container page">
+  <h1 class="page-title">✨ 恋爱清单</h1>
+  <p class="page-desc">一起完成想做的事，每打一个勾都是幸福</p>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-text"><%= stats.done || 0 %> / <%= stats.total %> 已完成</div>
+    <div class="progress-bar"><div class="progress-fill" style="width: <%= stats.total ? ((stats.done||0)/stats.total*100) : 0 %>%"></div></div>
+  </div>
+
+  <ul class="checklist">
+    <% items.forEach(item => { %>
+      <li class="checklist-item <%= item.done ? 'done' : '' %>">
+        <form action="/checklist/<%= item.id %>/toggle" method="post" style="display:inline">
+          <button type="submit" class="check-box <%= item.done ? 'checked' : '' %>">
+            <%= item.done ? '✓' : '' %>
+          </button>
+        </form>
+        <span class="check-emoji"><%= item.emoji %></span>
+        <span class="check-title"><%= item.title %></span>
+      </li>
+    <% }) %>
+  </ul>
+</section>
+
+<%- include('partials/footer') %>

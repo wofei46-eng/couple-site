@@ -1,0 +1,17 @@
+<%- include('partials/header') %>
+
+<article class="container page">
+  <div class="article-detail">
+    <h1 class="article-detail-title"><%= article.title %></h1>
+    <div class="article-detail-meta">
+      <img src="<%= article.author_avatar %>" alt="" class="mini-avatar">
+      <span><%= article.author_name %></span>
+      <span>·</span>
+      <span><%= new Date(article.created_at).toLocaleString('zh-CN') %></span>
+    </div>
+    <div class="article-content"><%- article.content %></div>
+  </div>
+  <a href="/articles" class="back-link">← 返回日志列表</a>
+</article>
+
+<%- include('partials/footer') %>

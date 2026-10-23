@@ -1,0 +1,23 @@
+<%- include('partials/header') %>
+
+<section class="container page">
+  <h1 class="page-title">💌 恋爱日志</h1>
+  <p class="page-desc">记录我们在一起的每一个瞬间</p>
+  <% if (articles.length === 0) { %>
+    <div class="empty">还没有日记，快来写第一篇吧～</div>
+  <% } %>
+  <div class="article-list">
+    <% articles.forEach(a => { %>
+      <a href="/articles/<%= a.id %>" class="article-list-item">
+        <div class="article-list-title"><%= a.title %></div>
+        <div class="article-list-meta">
+          <span class="author-tag"><%= a.author_name %></span>
+          <span><%= new Date(a.created_at).toLocaleString('zh-CN') %></span>
+        </div>
+        <div class="article-list-excerpt"><%= a.content.replace(/<[^>]+>/g, '').substring(0, 120) %></div>
+      </a>
+    <% }) %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

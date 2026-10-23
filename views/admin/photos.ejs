@@ -1,0 +1,31 @@
+<%- include('partials/admin-header') %>
+
+<div class="admin-content">
+  <h1 class="admin-title">相册管理</h1>
+  <div class="admin-card">
+    <form action="/admin/photos" method="post" enctype="multipart/form-data" class="inline-form">
+      <input type="file" name="photo" accept="image/*" required>
+      <input type="text" name="caption" placeholder="照片描述（可选）">
+      <button class="btn btn-primary">上传</button>
+    </form>
+  </div>
+  <div class="admin-card">
+    <% if (photos.length === 0) { %>
+      <p class="muted">还没有照片</p>
+    <% } else { %>
+      <div class="admin-photo-grid">
+        <% photos.forEach(p => { %>
+          <div class="admin-photo-card">
+            <img src="<%= p.filename %>" alt="">
+            <% if (p.caption) { %><p><%= p.caption %></p><% } %>
+            <form action="/admin/photos/<%= p.id %>?_method=DELETE" method="post" onsubmit="return confirm('删除？')">
+              <button class="btn btn-sm btn-danger">删除</button>
+            </form>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('partials/admin-footer') %>

@@ -1,0 +1,66 @@
+<%- include('partials/admin-header') %>
+
+<div class="admin-content">
+  <h1 class="admin-title"><%= article ? '编辑日记' : '写新日记' %></h1>
+  <div class="admin-card">
+    <form action="<%= article ? '/admin/articles/' + article.id + '?_method=PUT' : '/admin/articles' %>" method="post">
+      <div class="form-group">
+        <label>标题</label>
+        <input type="text" name="title" value="<%= article ? article.title : '' %>" required placeholder="给这篇日记起个标题">
+      </div>
+      <div class="form-group">
+        <label>正文</label>
+        <div class="editor-toolbar">
+          <button type="button" data-cmd="bold"><b>B</b></button>
+          <button type="button" data-cmd="italic"><i>I</i></button>
+          <button type="button" data-cmd="underline"><u>U</u></button>
+          <button type="button" data-cmd="strikeThrough"><s>S</s></button>
+          <span class="sep">|</span>
+          <button type="button" data-cmd="formatBlock" data-val="h2">H2</button>
+          <button type="button" data-cmd="formatBlock" data-val="h3">H3</button>
+          <button type="button" data-cmd="formatBlock" data-val="p">P</button>
+          <span class="sep">|</span>
+          <button type="button" data-cmd="insertUnorderedList">• 列表</button>
+          <button type="button" data-cmd="insertOrderedList">1. 列表</button>
+          <span class="sep">|</span>
+          <button type="button" data-cmd="justifyLeft">左</button>
+          <button type="button" data-cmd="justifyCenter">中</button>
+          <button type="button" data-cmd="justifyRight">右</button>
+          <span class="sep">|</span>
+          <button type="button" id="insertImgBtn">🖼️ 图片</button>
+        </div>
+        <div id="editor" class="rich-editor" contenteditable="true"><%= article ? article.content : '' %></div>
+        <textarea name="content" id="content" hidden><%= article ? article.content : '' %></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" onclick="syncContent()"><%= article ? '保存修改' : '发布日记' %></button>
+        <a href="/admin/articles" class="btn">取消</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const editor = document.getElementById('editor');
+  const hidden = document.getElementById('content');
+
+  function syncContent() { hidden.value = editor.innerHTML; }
+
+  document.querySelectorAll('.editor-toolbar button[data-cmd]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cmd = btn.dataset.cmd;
+      const val = btn.dataset.val || null;
+      document.execCommand(cmd, false, val);
+      editor.focus();
+    });
+  });
+
+  document.getElementById('insertImgBtn').addEventListener('click', () => {
+    const url = prompt('请输入图片 URL：');
+    if (url) document.execCommand('insertImage', false, url);
+  });
+
+  editor.addEventListener('input', syncContent);
+</script>
+
+<%- include('partials/admin-footer') %>

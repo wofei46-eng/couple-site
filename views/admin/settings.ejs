@@ -1,0 +1,89 @@
+<%- include('partials/admin-header') %>
+
+<div class="admin-content">
+  <h1 class="admin-title">站点设置</h1>
+
+  <% if (req.query.ok) { %>
+    <div class="alert alert-success">保存成功！</div>
+  <% } %>
+  <% if (req.query.err === 'oldpwd') { %>
+    <div class="alert alert-error">原密码错误</div>
+  <% } %>
+  <% if (req.query.err === 'short') { %>
+    <div class="alert alert-error">新密码至少6位</div>
+  <% } %>
+
+  <div class="admin-card">
+    <h3>基本信息</h3>
+    <form action="/admin/settings?_method=PUT" method="post">
+      <div class="form-group">
+        <label>站点名称</label>
+        <input type="text" name="site_name" value="<%= settings.site_name %>">
+      </div>
+      <div class="form-group">
+        <label>站点副标题</label>
+        <input type="text" name="site_subtitle" value="<%= settings.site_subtitle %>">
+      </div>
+      <div class="form-group">
+        <label>在一起的日期（用于计算天数）</label>
+        <input type="date" name="anniversary" value="<%= settings.anniversary %>">
+      </div>
+      <div class="form-group">
+        <label>关于我们（支持换行）</label>
+        <textarea name="about_text" rows="5"><%= settings.about_text %></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>左边昵称</label>
+          <input type="text" name="left_name" value="<%= settings.left_name %>">
+        </div>
+        <div class="form-group">
+          <label>右边昵称</label>
+          <input type="text" name="right_name" value="<%= settings.right_name %>">
+        </div>
+      </div>
+      <button class="btn btn-primary">保存设置</button>
+    </form>
+  </div>
+
+  <div class="admin-card">
+    <h3>头像与背景</h3>
+    <form action="/admin/settings/avatar" method="post" enctype="multipart/form-data">
+      <div class="form-row">
+        <div class="form-group">
+          <label>左边头像 (当前)</label>
+          <img src="<%= settings.left_avatar %>" class="avatar-preview">
+          <input type="file" name="left_avatar" accept="image/*">
+        </div>
+        <div class="form-group">
+          <label>右边头像 (当前)</label>
+          <img src="<%= settings.right_avatar %>" class="avatar-preview">
+          <input type="file" name="right_avatar" accept="image/*">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>首页背景图 (当前)</label>
+        <% if (settings.hero_background) { %><img src="<%= settings.hero_background %>" class="bg-preview"><% } else { %><p class="muted">未设置背景图，使用默认渐变</p><% } %>
+        <input type="file" name="hero_background" accept="image/*">
+      </div>
+      <button class="btn btn-primary">上传图片</button>
+    </form>
+  </div>
+
+  <div class="admin-card">
+    <h3>修改密码</h3>
+    <form action="/admin/settings/password" method="post">
+      <div class="form-group">
+        <label>原密码</label>
+        <input type="password" name="old_password" required>
+      </div>
+      <div class="form-group">
+        <label>新密码（至少6位）</label>
+        <input type="password" name="new_password" required minlength="6">
+      </div>
+      <button class="btn btn-primary">修改密码</button>
+    </form>
+  </div>
+</div>
+
+<%- include('partials/admin-footer') %>

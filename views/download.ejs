@@ -1,0 +1,169 @@
+<%- include('partials/header') %>
+
+<section class="container" style="padding: 30px 16px; max-width: 560px;">
+  <div style="text-align: center; background: #fff; border-radius: 20px; padding: 35px 24px; box-shadow: 0 8px 32px rgba(255,107,157,0.15);">
+
+    <div style="font-size: 44px; margin-bottom: 10px;">📱</div>
+    <h1 style="color: var(--pink); margin-bottom: 6px; font-size: 24px;">下载情侣小站 App</h1>
+    <p style="color: var(--text-light); margin-bottom: 24px; font-size: 14px;">Android 版 · 大小 <%= apkSize %> MB</p>
+
+    <% if (qrDataUrl) { %>
+    <div style="margin-bottom: 24px;">
+      <img src="<%= qrDataUrl %>" alt="下载二维码"
+           style="width: 200px; height: 200px; border: 8px solid #fff; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.1);">
+      <p style="color: var(--text-light); font-size: 13px; margin-top: 10px;">
+        用手机相机或浏览器扫一扫<br>打开本下载页面
+      </p>
+    </div>
+    <% } %>
+
+    <!-- 主下载按钮 -->
+    <a href="/download/apk" id="downloadBtn" download="couple-site-1.0.0.apk"
+       style="display: inline-block; background: linear-gradient(135deg, #ff6b9d, #a78bfa); color: #fff; padding: 15px 44px; border-radius: 30px; font-size: 17px; font-weight: 600; text-decoration: none; box-shadow: 0 4px 16px rgba(255,107,157,0.4); transition: transform 0.15s; -webkit-tap-highlight-color: transparent;"
+       ontouchstart="this.style.transform='scale(0.95)'"
+       ontouchend="this.style.transform='scale(1)'"
+       onmousedown="this.style.transform='scale(0.95)'"
+       onmouseup="this.style.transform='scale(1)'"
+       onmouseleave="this.style.transform='scale(1)'">
+      ⬇️ 立即下载 APK
+    </a>
+
+    <!-- 备用下载链接 -->
+    <div style="margin-top: 16px;">
+      <button id="copyBtn" onclick="copyDownloadLink()"
+              style="background: #f5f5f5; color: var(--text); border: none; padding: 8px 18px; border-radius: 18px; font-size: 13px; cursor: pointer; -webkit-tap-highlight-color: transparent;">
+        📋 复制下载链接
+      </button>
+    </div>
+
+    <!-- 重要提示 -->
+    <div style="margin-top: 24px; padding: 14px; background: #fff3cd; border-radius: 12px; text-align: left; border: 1px solid #ffeaa7;">
+      <p style="font-size: 13px; color: #856404; margin: 0; line-height: 1.8;">
+        <strong>⚠️ 下载须知：</strong><br>
+        1. 请使用 <strong>Chrome、Safari 或系统浏览器</strong> 打开本页面<br>
+        2. <strong>不要用微信内置浏览器</strong>，微信会拦截 APK 下载<br>
+        3. 如点击无反应，请长按按钮选择「链接另存为」<br>
+        4. 下载完成后在通知栏或文件管理器中找到 APK 安装
+      </p>
+    </div>
+
+    <!-- 安装说明 -->
+    <div style="margin-top: 16px; padding: 14px; background: var(--pink-soft); border-radius: 12px; text-align: left;">
+      <p style="font-size: 13px; color: var(--text); margin: 0; line-height: 1.8;">
+        <strong>📌 安装步骤：</strong><br>
+        1. 点击「立即下载」获取 APK 文件<br>
+        2. 下载完成后点击文件进行安装<br>
+        3. 如提示「未知来源」，请在设置中允许<br>
+        4. 打开 App 后输入服务器地址即可使用
+      </p>
+    </div>
+
+    <!-- 下载地址显示 -->
+    <div style="margin-top: 20px; padding: 12px; background: #f8f9fa; border-radius: 10px;">
+      <p style="font-size: 12px; color: var(--text-light); margin: 0 0 6px 0;">直链地址（可复制到浏览器打开）：</p>
+      <code id="directLink" style="background: #fff; padding: 6px 10px; border-radius: 6px; font-size: 11px; word-break: break-all; display: block; color: var(--text);"><%= downloadUrl %>/apk</code>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  // 复制下载链接
+  function copyDownloadLink() {
+    const link = document.getElementById('directLink').textContent;
+    const textarea = document.createElement('textarea');
+    textarea.value = link;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      document.execCommand('copy');
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = '✅ 已复制';
+      setTimeout(() => { btn.textContent = '📋 复制下载链接'; }, 2000);
+    } catch (e) {
+      alert('复制失败，请手动复制：\n' + link);
+    }
+    document.body.removeChild(textarea);
+  }
+
+  // 判断是否为移动端
+  function isMobile() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  }
+
+  // Blob 方式下载
+  function downloadApk() {
+    const btn = document.getElementById('downloadBtn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '⏳ 正在下载...';
+    btn.style.pointerEvents = 'none';
+    btn.style.opacity = '0.7';
+
+    fetch('/download/apk', { method: 'GET' })
+      .then(response => {
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        // 优先用 streaming 显示进度，不支持则用 blob()
+        if (response.body && response.body.getReader) {
+          const contentLength = response.headers.get('content-length');
+          const total = contentLength ? parseInt(contentLength) : 0;
+          const reader = response.body.getReader();
+          let received = 0;
+          const chunks = [];
+          function read() {
+            return reader.read().then(({ done, value }) => {
+              if (done) {
+                saveBlob(new Blob(chunks, { type: 'application/vnd.android.package-archive' }), btn, originalText);
+                return;
+              }
+              chunks.push(value);
+              received += value.length;
+              if (total) btn.innerHTML = '⏳ 下载中 ' + Math.round(received / total * 100) + '%';
+              return read();
+            });
+          }
+          return read();
+        } else {
+          return response.blob().then(blob => saveBlob(blob, btn, originalText));
+        }
+      })
+      .catch(err => {
+        console.error('Blob下载失败:', err);
+        btn.innerHTML = originalText;
+        btn.style.pointerEvents = 'auto';
+        btn.style.opacity = '1';
+        // 兜底：直接用后端 Content-Disposition 下载
+        if (confirm('下载失败，是否改用浏览器直接下载？')) {
+          window.location.href = '/download/apk';
+        }
+      });
+  }
+
+  // 保存 Blob 为文件
+  function saveBlob(blob, btn, originalText) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'couple-site-1.0.0.apk';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    btn.innerHTML = '✅ 下载完成';
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.style.pointerEvents = 'auto';
+      btn.style.opacity = '1';
+    }, 2000);
+  }
+
+  // 绑定下载按钮
+  document.getElementById('downloadBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    downloadApk();
+  });
+</script>
+
+<%- include('partials/footer') %>
